@@ -392,36 +392,43 @@ void Recycle_Handler()
     }
 }
 //fork方式
-void isFork(char *remote_ip,int remote_port,int fork_num,int is_block) {
+void isFork(char *remote_ip,int remote_port,int fork_num,int is_block) 
+{
     pid_t pid=1;
     int cnt=fork_num;
-    signal(SIGCHLD, Recycle_Handler);
+    signal(SIGCHLD, Recycle_Handler); //检测到子进程停止则回收，并通知反馈
     while(1)
     {
-        if(pid<0){//分裂失败，退出循环
+        if(pid<0)
+        {//分裂失败，退出循环
             break;
-         }
-         if (pid == 0){//子进程
+        }
+        if (pid == 0)
+        {//子进程
             prctl(PR_SET_PDEATHSIG, SIGHUP);
             int con_cnt=0;
-            while(chldProc(remote_ip,remote_port,is_block)<0){
+            while(chldProc(remote_ip,remote_port,is_block)<0)
+            {
                 printf("chldProc 第 %d 次返回-1了！！！不气馁重连去！\n",++con_cnt);
-                if(con_cnt>10){
+                if(con_cnt>10)
+                {
                     printf("chldProc 已经第 10 次失败。\n");
                     break;
                 }
             }
             return ;
-         }
-  	     else{//父进程
+        }
+  	    else
+        {//父进程
             if(cnt<=0)
                 break;//循环次数到
             pid=fork();//分裂子进程
-         }
-         cnt--;
         }
+        cnt--;
+    }
     printf("client端已成功分裂出%d个子进程去连接server端去了。\n",fork_num-cnt);
-    while (1) {
+    while (1) 
+    {
         sleep(2);
     }
 }
