@@ -14,11 +14,14 @@ void getTime(char *time_str){
     sprintf(time_str,"%d-%d-%d %d:%d:%d",(1900+p->tm_year),(1 + p->tm_mon),p->tm_mday,p->tm_hour,p->tm_min,p->tm_sec);
 }
 //创建socket描述符并设置模式（阻塞/非阻塞）
-int create_socket(int is_block){
+int create_socket(int is_block)
+{
     int sockfd,n;
     //创建socket描述符
-    while(1){
-        if( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+    while(1)
+    {
+        if( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        {
             printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);
             return -1;
         }
@@ -30,13 +33,16 @@ int create_socket(int is_block){
     }
 
     //是否设为非阻塞模式
-    if(!is_block){
-        if ((n = fcntl(sockfd, F_GETFL, 0))<0) {
+    if(!is_block)
+    {
+        if ((n = fcntl(sockfd, F_GETFL, 0))<0) 
+        {
             printf("error: %s(errno: %d)\n",strerror(errno),errno);
             close(sockfd);
             return -1;
         }
-        if (fcntl(sockfd, F_SETFL, n|O_NONBLOCK)<0) {
+        if (fcntl(sockfd, F_SETFL, n|O_NONBLOCK)<0) 
+        {
             printf("error: %s(errno: %d)\n",strerror(errno),errno);
             close(sockfd);
             return -1;
@@ -44,18 +50,21 @@ int create_socket(int is_block){
     }
     //置端口重用
     int opt=1;
-    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0){
-         printf("errno=%d(%s)\n", errno, strerror(errno));
-         return -1;
-     }
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0)
+    {
+        printf("errno=%d(%s)\n", errno, strerror(errno));
+        return -1;
+    }
      return sockfd;
 }
 //设置读写超时
-int setTimeOut(int sockfd){
+int setTimeOut(int sockfd)
+{
     struct timeval tv;
     tv.tv_sec=60;//60秒
     tv.tv_usec=0;
-    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(tv)) < 0){
+    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(tv)) < 0)
+    {
          printf("errno=%d(%s)\n", errno, strerror(errno));
          return -1;
      }
@@ -108,26 +117,31 @@ int conn_socket_cli(int sockfd,char *remote_ip,int remote_port,int is_block)
     }
 }
 //创建一个socket，并进行连接操作
-int get_socket_cli(char *remote_ip,int remote_port,int is_block){
+int get_socket_cli(char *remote_ip,int remote_port,int is_block)
+{
     int sockfd;
     //创建socket描述符
-    if( (sockfd = create_socket(is_block)) < 0){
+    if( (sockfd = create_socket(is_block)) < 0)
+    {
         return -1;
     }
     //阻塞方式设置读写超时
-    if(is_block){
+    if(is_block)
+    {
         if(setTimeOut(sockfd)<0)
             return -1;
     }
     //连接
-    if( conn_socket_cli(sockfd,remote_ip,remote_port,is_block) < 0){
+    if( conn_socket_cli(sockfd,remote_ip,remote_port,is_block) < 0)
+    {
         return -1;
     }
     return sockfd;
 }
 
 //阻塞方式
-int chld_block(char *remote_ip,int remote_port) {
+int chld_block(char *remote_ip,int remote_port) 
+{
     int flag=0;
     int sockfd;
     //struct sockaddr_in    servaddr;
@@ -140,17 +154,20 @@ int chld_block(char *remote_ip,int remote_port) {
     int reconn_cnt=-1;
     while (1) {
         reconn_cnt++;
-        if(reconn_cnt>10){
+        if(reconn_cnt>10)
+        {
             printf(" -----pid= %d 重连了10次还没有？？？生气得退出了！------  \n",pid);
-            return -1;
+            return -1; //return -1 一般表示 子进程 返回失败
         }
-        if(reconn_cnt>0){
+        if(reconn_cnt>0)
+        {
             sleep(30);
             printf(" -----pid= %d 第 %d 次重连,...------  \n",pid,reconn_cnt);
         }
 
         //创建并连接
-        if( (sockfd =get_socket_cli(remote_ip,remote_port,1)) < 0){
+        if( (sockfd = get_socket_cli(remote_ip,remote_port,1)) < 0)
+        {
             return -1;
         }
         //StuNo
@@ -368,10 +385,11 @@ int chld_nonblock(char *remote_ip,int remote_port) {
     return 1;
 }
 //子进程处理函数
-int chldProc(char *remote_ip,int remote_port,int is_block) {
+int chldProc(char *remote_ip,int remote_port,int is_block) 
+{
     pid_t pid=getpid();
     int flag;
-    if(is_block)
+    if(is_block)  //is_block = 1 阻塞模式
         flag=chld_block(remote_ip,remote_port);
     else
         flag=chld_nonblock(remote_ip,remote_port);
@@ -392,36 +410,43 @@ void Recycle_Handler()
     }
 }
 //fork方式
-void isFork(char *remote_ip,int remote_port,int fork_num,int is_block) {
+void isFork(char *remote_ip,int remote_port,int fork_num,int is_block) 
+{
     pid_t pid=1;
     int cnt=fork_num;
-    signal(SIGCHLD, Recycle_Handler);
+    signal(SIGCHLD, Recycle_Handler); //检测到子进程停止则回收，并通知反馈
     while(1)
     {
-        if(pid<0){//分裂失败，退出循环
+        if(pid<0)
+        {//分裂失败，退出循环
             break;
-         }
-         if (pid == 0){//子进程
-            prctl(PR_SET_PDEATHSIG, SIGHUP);
+        }
+        if (pid == 0)
+        {//子进程
+            prctl(PR_SET_PDEATHSIG, SIGHUP); //父进程退出，子进程也退出
             int con_cnt=0;
-            while(chldProc(remote_ip,remote_port,is_block)<0){
+            while(chldProc(remote_ip,remote_port,is_block)<0)
+            {
                 printf("chldProc 第 %d 次返回-1了！！！不气馁重连去！\n",++con_cnt);
-                if(con_cnt>10){
+                if(con_cnt>10)
+                {
                     printf("chldProc 已经第 10 次失败。\n");
                     break;
                 }
             }
             return ;
-         }
-  	     else{//父进程
+        }
+  	    else
+        {//父进程
             if(cnt<=0)
                 break;//循环次数到
             pid=fork();//分裂子进程
-         }
-         cnt--;
         }
+        cnt--;
+    }
     printf("client端已成功分裂出%d个子进程去连接server端去了。\n",fork_num-cnt);
-    while (1) {
+    while (1) 
+    {
         sleep(2);
     }
 }
