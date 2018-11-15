@@ -178,14 +178,16 @@ int chld_block(char *remote_ip,int remote_port)
             close(sockfd);
             continue;
         }
-        if(write(sockfd,&sndNum,4)<=0){
+        if(write(sockfd,&sndNum,4)<=0)
+        {
             printf(" pid= %d 倒在了write StuNo ... \n",pid);
             close(sockfd);
             continue;
         }
         //pid
         sndNum=htonl(pid);
-        if((read_msg_cli(sockfd,"pid",3))<0){
+        if((read_msg_cli(sockfd,"pid",3))<0)
+        {
             printf(" pid= %d 倒在了Recv pid ... \n",pid);
             close(sockfd);
             continue;
