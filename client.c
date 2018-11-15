@@ -423,11 +423,7 @@ void isFork(char *remote_ip,int remote_port,int fork_num,int is_block)
         }
         if (pid == 0)
         {//子进程
-<<<<<<< HEAD
             prctl(PR_SET_PDEATHSIG, SIGHUP); //父进程退出，子进程也退出
-=======
-            prctl(PR_SET_PDEATHSIG, SIGHUP);
->>>>>>> f71f25dcf71ed3f3e180f78d95e30e8ed92c1ab9
             int con_cnt=0;
             while(chldProc(remote_ip,remote_port,is_block)<0)
             {
