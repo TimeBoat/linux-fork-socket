@@ -1,5 +1,5 @@
 #include "cli.h"
-//ÅĞ¶ÏÊÇ²»ÊÇÊı×Ö
+//åˆ¤æ–­æ˜¯ä¸æ˜¯æ•°å­—
 int isNum(char *src,int len){
     int i;
     for (i = 0; i < len; i++) {
@@ -8,9 +8,9 @@ int isNum(char *src,int len){
     }
     return 1;
 }
-//client¶ËµÄreadº¯Êı£¬Í¬Ê±¶ÔÊÕµ½µÄĞÅÏ¢½øĞĞÅĞ±ğ
+//clientç«¯çš„readå‡½æ•°ï¼ŒåŒæ—¶å¯¹æ”¶åˆ°çš„ä¿¡æ¯è¿›è¡Œåˆ¤åˆ«
 int read_msg_cli(int sockfd,char *dst,int read_size){
-    //½ÓÊÕÊı¾İ
+    //æ¥æ”¶æ•°æ®
     char buf[32];
     int n,i,len;
 READ:
@@ -28,34 +28,34 @@ READ:
         return 0;
     }
     buf[n]='\0';
-    //ÅĞ±ğÊı¾İ
+    //åˆ¤åˆ«æ•°æ®
     len=strlen(buf);
-    if(len<=5){//Èç¹û´«¹ıÀ´µÄÊÇ"StuNo"/"pid"/"TIME"/"end"
+    if(len<=5){//å¦‚æœä¼ è¿‡æ¥çš„æ˜¯"StuNo"/"pid"/"TIME"/"end"
         if(strcmp(buf,dst)==0)
             return 1;
     }
-    else if(len==8){//Èç¹û´«¹ıÀ´µÄÊÇ"str*****"
-        if(strncmp(buf,dst,3)==0){//Ç°Èı¸ö×Ö·ûÊÇstr
+    else if(len==8){//å¦‚æœä¼ è¿‡æ¥çš„æ˜¯"str*****"
+        if(strncmp(buf,dst,3)==0){//å‰ä¸‰ä¸ªå­—ç¬¦æ˜¯str
             if(!(isNum(buf+3,5))){
-                printf("client¶ËÊÕµ½strxxxxx¸ñÊ½ÓĞÎó¡£\n");
+                printf("clientç«¯æ”¶åˆ°strxxxxxæ ¼å¼æœ‰è¯¯ã€‚\n");
                 return -1;
             }
             int ret=atoi(buf+3);
             if(ret>0)
                 return ret;
             else{
-            printf("client¶ËÊÕµ½str00000,ÓĞÎó¡£\n");
+            printf("clientç«¯æ”¶åˆ°str00000,æœ‰è¯¯ã€‚\n");
                 return -1;
             }
         }
     }
     else{
-        printf("client¶ËÊÕµ½µÄÊı¾İÓĞÎó¡£½«¶Ï¿ªÁ¬½ÓÖØĞÂÁ¬½Ó¡­¡­\n");
+        printf("clientç«¯æ”¶åˆ°çš„æ•°æ®æœ‰è¯¯ã€‚å°†æ–­å¼€è¿æ¥é‡æ–°è¿æ¥â€¦â€¦\n");
         return -1;
     }
 }
 
-//Ñ­»·write,È·±£Ğ´ÈëÈ«²¿Êı¾İ
+//å¾ªç¯write,ç¡®ä¿å†™å…¥å…¨éƒ¨æ•°æ®
 int write_msg_cli(int sockfd,char *buf,int write_size){
     int total=0;
     int n,sel;
@@ -92,7 +92,7 @@ WRITE:
     }//end of while
     return total;
 }
-//readn´úÌæread,È·±£¶Áµ½È«²¿Êı¾İ
+//readnä»£æ›¿read,ç¡®ä¿è¯»åˆ°å…¨éƒ¨æ•°æ®
 int readn(int sockfd,char *buf,int len){
     int total=0;
     int n;

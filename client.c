@@ -172,7 +172,8 @@ int chld_block(char *remote_ip,int remote_port)
         }
         //StuNo
         sndNum=htonl(StuNo);
-        if((read_msg_cli(sockfd,"StuNo",5))<0){
+        if((read_msg_cli(sockfd,"StuNo",5))<0)
+        {
             printf(" pid= %d 倒在了Recv StuNo ... \n",pid);
             close(sockfd);
             continue;
@@ -400,6 +401,7 @@ int chldProc(char *remote_ip,int remote_port,int is_block)
         return -1;
         //printf("\nclient端的pid=%d 儿子中途崩殂……。\n",pid);
 }
+
 int RcyNum=0;
 void Recycle_Handler()
 {
