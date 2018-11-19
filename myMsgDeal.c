@@ -35,42 +35,47 @@ READ:
         printf("n= %d ,read error: %s(errno: %d)\n",n,strerror(errno),errno);
         return 0;
     }
-    buf[n]='\0';
-    //判别数据
-    len=strlen(buf);
-    if(len<=5)
-    {//如果传过来的是"StuNo"/"pid"/"TIME"/"end"
-        if(strcmp(buf,dst)==0)
-            return 1;
-    }
-    else if(len==8)
-    {//如果传过来的是"str*****"
-        if(strncmp(buf,dst,3)==0)
-        {//前三个字符是str
-            if(!(isNum(buf+3,5)))
-            {
-                printf("client端收到strxxxxx格式有误。\n");
-                return -1;
-            }
-            int ret=atoi(buf+3);
-            if(ret>0)
-                return ret;
-            else
-            {
-            printf("client端收到str00000,有误。\n");
-                return -1;
-            }
-        }
-    }
     else
     {
-        printf("client端收到的数据有误。将断开连接重新连接……\n");
-        return -1;
+        buf[n]='\0';
+        //判别数据
+        len=strlen(buf); //if succ, len = n
+        if(len<=5)
+        {//如果传过来的是"StuNo"/"pid"/"TIME"/"end"
+            if(strcmp(buf,dst)==0)
+                return 1;
+        }
+        else if(len==8)
+        {//如果传过来的是"str*****"
+            if(strncmp(buf,dst,3)==0) //判断前三个字符是str
+            {
+                if(!(isNum(buf+3,5)))
+                {
+                    printf("client端收到strxxxxx格式有误。\n");
+                    return -1;
+                }
+                int ret=atoi(buf+3);
+                if(ret>0)
+                    return ret;
+                else
+                {
+                printf("client端收到str00000,有误。\n");
+                return -1;
+                }
+            }
+            else return -1;
+        }
+        else
+        {
+            printf("client端收到的数据有误。将断开连接重新连接……\n");
+            return -1;
+        }
     }
 }
 
 //循环write,确保写入全部数据
-int write_msg_cli(int sockfd,char *buf,int write_size){
+int write_msg_cli(int sockfd,char *buf,int write_size)
+{
     int total=0;
     int n,sel;
     fd_set wfd;

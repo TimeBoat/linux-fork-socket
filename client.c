@@ -152,7 +152,8 @@ int chld_block(char *remote_ip,int remote_port)
     int len;
     char *buf;
     int reconn_cnt=-1;
-    while (1) {
+    while (1) 
+    {
         reconn_cnt++;
         if(reconn_cnt>10)
         {
@@ -253,7 +254,8 @@ int chld_block(char *remote_ip,int remote_port)
     return 1;
 }
 //非阻塞方式
-int chld_nonblock(char *remote_ip,int remote_port) {
+int chld_nonblock(char *remote_ip,int remote_port) 
+{
     int n,i,flag=0;
     int    sockfd;
     //struct sockaddr_in    servaddr;
@@ -269,7 +271,8 @@ int chld_nonblock(char *remote_ip,int remote_port) {
     int maxfd;
     struct timeval tm;
     int reconn_cnt=-1;
-    while (1) {
+    while (1) 
+    {
         reconn_cnt++;
         if(reconn_cnt>10){
             printf(" -----pid= %d 重连了10次还没有？？？生气得退出了！------  \n",pid);
