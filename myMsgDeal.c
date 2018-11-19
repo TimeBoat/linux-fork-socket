@@ -17,7 +17,9 @@ int read_msg_cli(int sockfd,char *dst,int read_size)
     char buf[32];
     int n,i,len;
 READ:
-    n=read(sockfd,buf,read_size);
+    n=read(sockfd,buf,read_size); 
+    //deliver the content of 'socked''s 'read_size' length bits into 'buf' store place.
+    //if fun read is done succ, n == 'read_size'.
     if(n<0)
     {
         if (errno==EINTR)

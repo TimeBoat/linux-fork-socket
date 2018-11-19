@@ -192,26 +192,30 @@ int chld_block(char *remote_ip,int remote_port)
             close(sockfd);
             continue;
         }
-        if(write(sockfd,&sndNum,4)<=0){
+        if(write(sockfd,&sndNum,4)<=0)
+        {
             printf(" pid= %d 倒在了write pid ... \n",pid);
             close(sockfd);
             continue;
         }
         //TIME
-        if((read_msg_cli(sockfd,"TIME",5))<0){
+        if((read_msg_cli(sockfd,"TIME",5))<0)
+        {
             printf(" pid= %d 倒在了Recv Time ... \n",pid);
             close(sockfd);
             continue;
         }
         getTime(time_str);
-        if(write_msg_cli(sockfd,time_str,19)<=0){
+        if(write_msg_cli(sockfd,time_str,19)<=0)
+        {
             printf(" pid= %d 倒在了write time ... \n",pid);
             close(sockfd);
             continue;
         }
         //str
         len=read_msg_cli(sockfd,"str",9);
-        if(len<=0){
+        if(len<=0)
+        {
             printf(" pid= %d 倒在了Recv Str ... \n",pid);
             close(sockfd);
             continue;
@@ -221,7 +225,8 @@ int chld_block(char *remote_ip,int remote_port)
         for(i=0;i<len;i++)
             buf[i]=rand()%256;
         buf[len]='\0';
-        if(write_msg_cli(sockfd,buf,len)<=0){
+        if(write_msg_cli(sockfd,buf,len)<=0)
+        {
             printf(" pid= %d 倒在了write buf ... \n",pid);
             close(sockfd);
             continue;
